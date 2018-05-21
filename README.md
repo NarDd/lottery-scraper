@@ -4,7 +4,7 @@ Lottery Scraping(PYTHON)
 This tool is created to provide 4D/TOTO results.  
 
 # Requirements
-Python 3.63 - Scrapper Programming Language  
+Python 3.63 - Scraper Programming Language  
 Selenium - Browser  
 BeautifulSoup - HTML/XML Parser  
 MongoDB - NoSQL Database  
