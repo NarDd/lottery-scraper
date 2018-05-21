@@ -11,6 +11,7 @@ MongoDB - NoSQL Database
 Laravel - API / Site
 PHP - Laravel
 Atom - Text Editor
+Pandas - Data Manipulation and Analysis
 
 # Installation Process for Windows
 Selenium 
@@ -18,13 +19,17 @@ Download ChromeDriver - https://chromedriver.storage.googleapis.com/index.html?p
 Create folder in C://webdrivers and place downloaded file in
 Add C://webdrivers into Path of System Environment Variables
 
+Pandas
+python -m pip install pandas
+
 # Updates
-Web Scrapping via Selenium/BeautifulSoup Completed
+Get page using BeautifulSoup/Selenium - Completed
+Sanitize Results - Completed
 
 # TODO
-Setup MongoDB
-Pass results into MongoDB
 Server Setup
+Setup MongoDB 
+Pass results into MongoDB
 API via Laravel
 Telegram Bot?
 Android App?
