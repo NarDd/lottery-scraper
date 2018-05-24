@@ -1,6 +1,5 @@
 import requests
 import os.path
-import pandas as pd
 
 from selenium import webdriver
 from bs4 import BeautifulSoup
