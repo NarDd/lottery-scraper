@@ -9,7 +9,7 @@ from datetime import datetime
 from pymongo import MongoClient
 
 # URLS
-url = "http://www.singaporepools.com.sg/en/product/Pages/4d_results.aspx"
+url = "http://www.singaporepools.com.sg/en/product/Pages/toto_results.aspx"
 
 # MongoDB Connection
 client = MongoClient('localhost', 27017)
@@ -28,7 +28,7 @@ def getPage(mode):
         processPage(soup,mode)
     else:
         mainPath = os.path.dirname(os.path.realpath(__file__))
-        resultsPath = "output"
+        resultsPath = "output/toto"
         i = datetime.now()
         filename = i.strftime('%Y%m%d%H%M%S') + ".txt"
         filepath = os.path.join(mainPath, resultsPath, filename)
@@ -37,7 +37,7 @@ def getPage(mode):
         try:
             with open(filepath, "w",encoding="utf-8") as file:
                 print("file created at " + filepath + "\n")
-                file.write(str(soup))
+                file.write(str(soup))#
                 file.close()
                 processPage(soup,mode)
         except IOError:
@@ -45,53 +45,40 @@ def getPage(mode):
     return
 
 def processPage(soup, mode):
+    #Storage list for all results
+    winResults = []
+    additonalNumber = None
 
     #Top Results Table Processing
-    topTable = soup.find("table",{"class":"table table-striped orange-header"})
-    rawDrawDate = topTable.find("th",{"class":"drawDate"}).get_text()
-
-    #Draw Date & Draw Number
+    detailTable = soup.find("table",{"class":"table table-striped orange-header"}).find("tr")
+    #print(detailTable)
+    rawDrawDate = detailTable.find("th",{"class":"drawDate"}).get_text()
+    rawDrawNumber = detailTable.find("th",{"class":"drawNumber"}).get_text()
     drawDate = datetime.strptime(rawDrawDate[5:],'%d %b %Y').strftime('%Y%m%d')
-    rawDrawNumber = topTable.find("th",{"class":"drawNumber"}).get_text()
     drawNumber = rawDrawNumber[9:]
+
     print("Draw Date " + drawDate)
     print("Draw Number " + drawNumber + "\n")
-    print("Top 3 Numbers")
+    #remember to format the date and Number
 
-    #Storage list for all results
-    top = []
-    starter = []
-    consolation = []
+    print("Results")
+    winningNumbersTable = soup.find("table",{"class":"table table-striped"})
+    if(winningNumbersTable.find("thead").find("tr").get_text().strip() == "Winning Numbers"):
+        resultTable = winningNumbersTable.find("tbody").find("tr")
+        for result in resultTable.findAll("td"):
+            print(result.get_text())
+            winResults.append(result.get_text())
 
-    #Top Results
-    for row in topTable.findAll('tr'):
-        tableDatas = row.findAll('td')
-        for tableData in tableDatas:
-            print(tableData.get_text())
-            top.append(tableData.get_text())
+    #Additional Number
+    additionalNumberTable = soup.findAll("table",{"class":"table table-striped"})[1]
+    if(additionalNumberTable.find("thead").find("tr").get_text().strip() == "Additional Number"):
+        adresultTable = additionalNumberTable.find("tbody").find("tr")
+        additionalNumber = adresultTable.find("td").get_text()
+        print("Additional Number")
+        print(additionalNumber)
 
-    print("Starter Numbers")
-    #Starter Results Table Processing
-    starterTable = soup.find("tbody",{"class":"tbodyStarterPrizes"})
-    for row in starterTable.findAll('tr'):
-        columns = row.findAll('td')
-        for column in columns:
-            print(column.get_text())
-            starter.append(column.get_text())
-            #if auto store data
-
-    print("Consolation Numbers")
-    #Consolation Results table Processing
-    consolTable = soup.find("tbody",{"class":"tbodyConsolationPrizes"})
-    for row in consolTable.findAll('tr'):
-        columns = row.findAll('td')
-        for column in columns:
-            print(column.get_text())
-            consolation.append(column.get_text())
-            #if auto store data
-
-    if(mode == "auto"):
-        storeData(drawDate, drawNumber, top, starter, consolation)
+#    if(mode == "auto")
+#        storeData(drawDate, drawNumber, winResults, additionalNumber)
 
 def storeData(drawDate, drawNumber, top, starter, consolation):
     print("Inserting into MongoDB")
