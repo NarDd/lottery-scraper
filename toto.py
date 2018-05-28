@@ -14,7 +14,7 @@ url = "http://www.singaporepools.com.sg/en/product/Pages/toto_results.aspx"
 # MongoDB Connection
 client = MongoClient('localhost', 27017)
 db = client.lottery
-collection = db.fourd
+collection = db.toto
 
 # Functions
 def getPage(mode):
@@ -77,10 +77,10 @@ def processPage(soup, mode):
         print("Additional Number")
         print(additionalNumber)
 
-#    if(mode == "auto")
-#        storeData(drawDate, drawNumber, winResults, additionalNumber)
+    if(mode == "auto"):
+        storeData(drawDate, drawNumber, winResults, additionalNumber)
 
-def storeData(drawDate, drawNumber, top, starter, consolation):
+def storeData(drawDate, drawNumber, winResults, additionalNumber):
     print("Inserting into MongoDB")
     #Insert String
     insertJSON = {"drawNumber": drawNumber,
@@ -88,17 +88,11 @@ def storeData(drawDate, drawNumber, top, starter, consolation):
     }
 
     i = 0
-    for result in top:
-        insertJSON["t"+str(i)] = result
+    for result in winResults:
+        insertJSON["n"+str(i)] = result
         i += 1
 
-    for result in starter:
-        insertJSON["s"+str(i)] = result
-        i += 1
-
-    for result in consolation:
-        insertJSON["c"+str(i)] = result
-        i += 1
+    insertJSON["additional"] = additionalNumber
 
     print(insertJSON)
     collection.insert_one(insertJSON)
@@ -108,9 +102,9 @@ def storeData(drawDate, drawNumber, top, starter, consolation):
 #Print argument error
 def argError():
     print("Argument error. Enter only the available case sensitive commands")
-    print("python 4d.py auto")
-    print("python 4d.py test")
-    print("python 4d.py read path/to/file")
+    print("python toto.py auto")
+    print("python toto.py test")
+    print("python toto.py read path/to/file")
 
 #Main
 if(len(sys.argv) < 2):
