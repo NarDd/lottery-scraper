@@ -28,7 +28,7 @@ def getPage(mode):
         processPage(soup,mode)
     else:
         mainPath = os.path.dirname(os.path.realpath(__file__))
-        resultsPath = "output"
+        resultsPath = "output/4d"
         i = datetime.now()
         filename = i.strftime('%Y%m%d%H%M%S') + ".txt"
         filepath = os.path.join(mainPath, resultsPath, filename)
